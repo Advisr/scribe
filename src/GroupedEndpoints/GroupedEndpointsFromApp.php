@@ -193,11 +193,15 @@ class GroupedEndpointsFromApp implements GroupedEndpointsContract
         Utils::deleteDirectoryAndContents(static::$cacheDir);
 
         if (!is_dir(static::$camelDir)) {
-            mkdir(static::$camelDir, 0777, true);
+            if (!mkdir($concurrentDirectory = static::$camelDir, 0777, true) && !is_dir($concurrentDirectory)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
 
         if (!is_dir(static::$cacheDir)) {
-            mkdir(static::$cacheDir, 0777, true);
+            if (!mkdir($concurrentDirectory = static::$cacheDir, 0777, true) && !is_dir($concurrentDirectory)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
 
         $fileNameIndex = 0;
